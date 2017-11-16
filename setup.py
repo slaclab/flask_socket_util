@@ -8,4 +8,5 @@ setup(name='flask_socket_util',
       author_email='mshankar@slac.stanford.edu',
       license='MIT',
       packages=['flask_socket_util'],
+      package_data={'flask_socket_util': ['websocket_client.js']},
       zip_safe=False)
