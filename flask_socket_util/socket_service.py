@@ -115,7 +115,7 @@ def kafka_2_websocket(topics):
             info = json.loads(msg.value)
             logger.info("JSON from Kafka %s", info)
             message_type = msg.topic
-            exp_name = info['exper_name']
+            exp_name = info['experiment_name']
             requests.post("http://" + app_server_ip_port + "/ws/socket/send_message_to_client/" + exp_name + "/" + message_type, json=info)
                 
     
