@@ -19,7 +19,8 @@ requests.post("http://" + app_server_ip_port + "/ws/socket/send_message_to_clien
 ``` 
 - The client Javascript is part of the Python package. Include it in your template like so
 ```
-<script type="text/javascript" src="../js/python/flask_socket_util/websocket_client.js"></script>
+  <script type="text/javascript" src="../../js/socket.io/node_modules/socket.io-client/dist/socket.io.js"></script>
+  <script type="text/javascript" src="../../js/python/flask_socket_util/websocket_client.js"></script>
 ```
 and add the Python hook in your `js` resolver.
 ```
@@ -35,6 +36,17 @@ def send_js(path):
 	        return send_file(filepath)
 
 ```
+
+In your client JS, add these lines in your document.ready function
+```
+	var experiment_name = "{{ experiment_name }}";
+
+    WebSocketConnection.connect();
+    $(document).on('elog', function(event, elogData) {
+    	console.log("Processing elog event for experiment " + experiment_name);
+
+```
+
 
 ### Debugging websocket configuration
 Websocket is typically routed thru Apache (or another web server) to Python.
