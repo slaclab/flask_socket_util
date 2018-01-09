@@ -39,8 +39,8 @@ def send_js(path):
 
 In your client JS, add these lines in your document.ready function
 ```
-	var experiment_name = "{{ experiment_name }}";
-
+    var experiment_name = "{{ experiment_name }}";
+...
     WebSocketConnection.connect();
     $(document).on('elog', function(event, elogData) {
     	console.log("Processing elog event for experiment " + experiment_name);
