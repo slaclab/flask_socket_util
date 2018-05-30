@@ -9,5 +9,5 @@ setup(name='flask_socket_util',
       license='MIT',
       packages=['flask_socket_util'],
       package_data={'flask_socket_util': ['websocket_client.js']},
-      install_requires=['flask >= 1.0.0', 'eventlet >= 0.23.0', 'flask-socketio >= 3.0.0']
+      install_requires=['flask >=1.0.0', 'eventlet >=0.23.0', 'flask-socketio >=3.0.0']
       zip_safe=False)

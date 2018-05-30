@@ -14,16 +14,16 @@ requirements:
   build:
     - python
     - setuptools
-    - flask >= 1.0.0
-    - eventlet >= 0.23.0
-    - flask-socketio >= 3.0.0
+    - flask >=1.0.0
+    - eventlet >=0.23.0
+    - flask-socketio >=3.0.0
     - kafka-python
   run:
     - python
     - setuptools
-    - flask >= 1.0.0
-    - eventlet >= 0.23.0
-    - flask-socketio >= 3.0.0
+    - flask >=1.0.0
+    - eventlet >=0.23.0
+    - flask-socketio >=3.0.0
     - kafka-python
 
 about:
