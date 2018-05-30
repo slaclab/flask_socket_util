@@ -13,9 +13,9 @@ from kafka import KafkaConsumer
 from kafka.errors import KafkaError
 
 '''
-The socket endpoint for web services. 
+The socket endpoint for web services.
 We have "rooms" for experiments; the client's join the rooms for updates.
-The server side intercepts Kafka messages and posts these back to the client. 
+The server side intercepts Kafka messages and posts these back to the client.
 In addition, one can send custom messages back to the client by POSTing to the send_message_to_client.
 Do this using requests.post to avoid thread deadlock issues; that is, don't call the method directly, instead use requests.post
 '''
@@ -41,12 +41,11 @@ def init_app(app, securityobj, kafkatopics=None):
     The socket service is always registered on the path /ws/socket.
     :param: app - The Flask application. We register the socketio blueprint and initialize socketio.
     :param: securityobj - The flask_authnz object used for authentication and authorization.
-    :param: kafkatopics - Specify a list of Kafka topics so subscribe to. Messgaes on these topics are routed to the browser as websocket events.   
+    :param: kafkatopics - Specify a list of Kafka topics so subscribe to. Messgaes on these topics are routed to the browser as websocket events.
     '''
     app.register_blueprint(socket_service_blueprint, url_prefix="/ws/socket")
     global security
     security = securityobj
-    eventlet.monkey_patch()
     socketio.init_app(app, async_mode="eventlet")
     if kafkatopics:
         kafka_2_websocket(kafkatopics)
@@ -83,7 +82,7 @@ def disconnect():
 def sock_send_message_to_client(experiment_name, message_type):
     """
     Send the message to all clients connected to this experiment's room
-    :param: experiment_name - The experiment_name; for example, diadaq13 
+    :param: experiment_name - The experiment_name; for example, diadaq13
     :param: message_type - The message type/business object type of the message; for example, elog
     """
     # Push update only if some clients are connected.
@@ -97,19 +96,19 @@ def sock_send_message_to_client(experiment_name, message_type):
 # Subscribe to Kafka messages for these topics and send them across to the client.
 def kafka_2_websocket(topics):
     """
-    Subscribe to a list of topics from Kafka. 
+    Subscribe to a list of topics from Kafka.
     Route messages on these topics to the web socket clients.
     :param: topics - The list of topics that we want to subscribe to.
     """
     app_server_ip_port = os.environ["SERVER_IP_PORT"]
-    
+
     def subscribe_kafka():
         if os.environ.get("SKIP_KAFKA_CONNECTION", False):
             logger.warn("Skipping Kafka connection")
             return
         consumer = KafkaConsumer(bootstrap_servers=[os.environ.get("KAFKA_BOOTSTRAP_SERVER", "localhost:9092")])
         consumer.subscribe(topics)
-    
+
         for msg in consumer:
             logger.info("Message from Kafka %s", msg)
             info = json.loads(msg.value)
@@ -117,8 +116,8 @@ def kafka_2_websocket(topics):
             message_type = msg.topic
             exp_name = info['experiment_name']
             requests.post("http://" + app_server_ip_port + "/ws/socket/send_message_to_client/" + exp_name + "/" + message_type, json=info)
-                
-    
+
+
     # Create thread for kafka consumer
     kafka_client_thread = Thread(target=subscribe_kafka)
     kafka_client_thread.start()
