@@ -25,25 +25,25 @@ var WebSocketConnection = (function(){
             socket.emit('join',experiment_name);
             console.log("Joined room",experiment_name);
         });
-    
+
         socket.on('connect_error',function(err){
             console.log('Websocket failed to connect to URL');
             console.log(err);
         });
-    
+
         socket.on('disconnect',function(){
             console.log('Disconnecting from websockets at ', sockIoPath);
         });
-    
+
         socket.on('psdm_ws_msg',function(update_msg){
             console.log("Message from server; type=" + update_msg['psdm_ws_msg_type']);
             $(document).trigger(update_msg['psdm_ws_msg_type'], update_msg);
-        });    
+        });
 
-        socket.on('ping', function(resp){
-            console.log(resp);
+        socket.on('ping', function(){
+            // console.log("Packet written out to the server...");
         })
-       
+
     };
 
     return self;
