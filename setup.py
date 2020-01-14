@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='flask_socket_util',
-      version='0.0.11',
+      version='0.0.12',
       description='A small utility for using websockets from within Flask for PSDM web services',
       url='https://github.com/slaclab/flask_socket_util.git',
       author='Murali Shankar',
