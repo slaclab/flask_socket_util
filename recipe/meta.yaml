@@ -1,10 +1,10 @@
 package:
   name: flask_socket_util
-  version: "0.0.12"
+  version: "0.0.13"
 
 source:
   git_url: https://github.com/slaclab/flask_socket_util.git
-  git_tag: "0.0.12"
+  git_tag: "0.0.13"
 
 build:
   noarch: python
