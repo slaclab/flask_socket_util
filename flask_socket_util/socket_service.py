@@ -46,7 +46,7 @@ def init_app(app, securityobj, kafkatopics=None):
     app.register_blueprint(socket_service_blueprint, url_prefix="/ws/socket")
     global security
     security = securityobj
-    socketio.init_app(app, async_mode="eventlet")
+    socketio.init_app(app, async_mode="eventlet", cors_allowed_origins='*')
     if kafkatopics:
         kafka_2_websocket(kafkatopics)
 
