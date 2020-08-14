@@ -16,7 +16,7 @@ socket_service.init_app(app, security, kafkatopics = ["elog"])
 ```
 app_server_ip_port = os.environ["SERVER_IP_PORT"]
 requests.post("http://" + app_server_ip_port + "/ws/socket/send_message_to_client/" + experiment_name + "/" + message_type, json=your_json)
-``` 
+```
 - The client Javascript is part of the Python package. Include it in your template like so
 ```
   <script type="text/javascript" src="../../js/socket.io/node_modules/socket.io-client/dist/socket.io.js"></script>
@@ -47,6 +47,8 @@ In your client JS, add these lines in your document.ready function
 
 ```
 
+### Notes
+- This does not work with gunicorn's max_workers > 1. A post to localhost is used to get around Python threading; this will only reach one worker and the others will not send out websocket messages. If you need more than one worker, use multiple gunicorn's on the same box.
 
 ### Debugging websocket configuration
 Websocket is typically routed thru Apache (or another web server) to Python.
