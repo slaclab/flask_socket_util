@@ -106,7 +106,7 @@ def kafka_2_websocket(topics):
         if os.environ.get("SKIP_KAFKA_CONNECTION", False):
             logger.warn("Skipping Kafka connection")
             return
-        consumer = KafkaConsumer(bootstrap_servers=[os.environ.get("KAFKA_BOOTSTRAP_SERVER", "localhost:9092")])
+        consumer = KafkaConsumer(bootstrap_servers=os.environ.get("KAFKA_BOOTSTRAP_SERVER", "localhost:9092").split(","))
         consumer.subscribe(topics)
 
         for msg in consumer:
