@@ -22,8 +22,10 @@ var WebSocketConnection = (function(){
         var socket = io.connect(scheme + "://" + document.domain + ':' + location.port + namespace, { transports : ['websocket'], 'path': sockIoPath });
         socket.on('connect',function(){
             console.log('Websocket connected to URL' + sockIoPath);
-            socket.emit('join',experiment_name);
-            console.log("Joined room",experiment_name);
+            var roomname = "the_global_room";
+            if(typeof experiment_name !== "undefined") { roomname = experiment_name; }
+            socket.emit('join',roomname);
+            console.log("Joined room",roomname);
         });
 
         socket.on('connect_error',function(err){

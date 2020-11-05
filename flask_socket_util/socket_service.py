@@ -101,6 +101,10 @@ def kafka_2_websocket(topics):
     :param: topics - The list of topics that we want to subscribe to.
     """
     app_server_ip_port = os.environ["SERVER_IP_PORT"]
+    # We categorize Kafka messages by experiment for performance reasons.
+    # However; this means that UI's that span experiments are at a loss as to which room to subscribe to
+    # So, we cross publish a subset of topics (really only one - experiments ) to a global "the_global_room"
+    global_room_topics = ["experiments"]
 
     def subscribe_kafka():
         if os.environ.get("SKIP_KAFKA_CONNECTION", False):
@@ -116,6 +120,8 @@ def kafka_2_websocket(topics):
             message_type = msg.topic
             exp_name = info['experiment_name']
             requests.post("http://" + app_server_ip_port + "/ws/socket/send_message_to_client/" + exp_name + "/" + message_type, json=info)
+            if message_type in global_room_topics:
+                requests.post("http://" + app_server_ip_port + "/ws/socket/send_message_to_client/the_global_room/" + message_type, json=info)
 
 
     # Create thread for kafka consumer
