@@ -47,7 +47,7 @@ In your client JS, add these lines in your document.ready function
 The variable `experiment_name` is used as SocketIO's room name. Cross-room messages, (for now, only the `experiments` topic), are sent on the `the_global_room` room. If the variable `experiment_name` is not defined, the `the_global_room` room is joined automatically.
 
 ### Notes
-- This does not work with gunicorn's max_workers > 1. A post to localhost is used to get around Python threading; this will only reach one worker and the others will not send out websocket messages. If you need more than one worker, use multiple gunicorn's on the same box.
+- Be careful with gunicorn's workers > 1. In previous versions, a post to localhost was used to get around Python threading; and this approach does not definitely work with multiple workers. If we need to resurrect the _post to localhost_, use one worker and then use multiple gunicorn's on the same box. Without the _post to localhost_, multiple workers seems to work; please let us know if it doesn't.
 
 ### Debugging websocket configuration
 Websocket is typically routed thru Apache (or another web server) to Python.
