@@ -16,7 +16,6 @@ from kafka.errors import KafkaError
 The socket endpoint for web services.
 We have "rooms" for experiments; the client's join the rooms for updates.
 The server side intercepts Kafka messages and posts these back to the client.
-In addition, one can send custom messages back to the client by POSTing to the send_message_to_client.
 Do this using requests.post to avoid thread deadlock issues; that is, don't call the method directly, instead use requests.post
 '''
 
@@ -71,20 +70,6 @@ def disconnect():
     logger.info(f"{usr} disconnected from websocket")
 
 
-
-@socket_service_blueprint.route("/send_message_to_client/<experiment_name>/<message_type>", methods=["POST"])
-def sock_send_message_to_client(experiment_name, message_type):
-    """
-    Send the message to all clients connected to this experiment's room
-    :param: experiment_name - The experiment_name; for example, diadaq13
-    :param: message_type - The message type/business object type of the message; for example, elog
-    """
-    request.json['psdm_ws_msg_type'] = message_type;
-    socketio.emit("psdm_ws_msg", request.json, namespace='/psdm_ws' , room=experiment_name)
-
-    return jsonify(success=True)
-
-
 # Subscribe to Kafka messages for these topics and send them across to the client.
 def kafka_2_websocket(topics):
     """
@@ -111,9 +96,10 @@ def kafka_2_websocket(topics):
             logger.info("JSON from Kafka %s", info)
             message_type = msg.topic
             exp_name = info['experiment_name']
-            requests.post("http://" + app_server_ip_port + "/ws/socket/send_message_to_client/" + exp_name + "/" + message_type, json=info)
+            info['psdm_ws_msg_type'] = message_type
+            socketio.emit("psdm_ws_msg", info, namespace='/psdm_ws' , room=exp_name)
             if message_type in global_room_topics:
-                requests.post("http://" + app_server_ip_port + "/ws/socket/send_message_to_client/the_global_room/" + message_type, json=info)
+                socketio.emit("psdm_ws_msg", info, namespace='/psdm_ws' , room="the_global_room")
 
 
     # Create thread for kafka consumer
