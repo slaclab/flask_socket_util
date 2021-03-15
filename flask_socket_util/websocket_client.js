@@ -46,6 +46,10 @@ var WebSocketConnection = (function(){
             // console.log("Packet written out to the server...");
         })
 
+        $(window).on("beforeunload", function(){
+          console.log("Disconnecting from websocket");
+          socket.disconnect();
+        })
     };
 
     return self;

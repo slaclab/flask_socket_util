@@ -29,12 +29,6 @@ socketio = SocketIO()
 socket_service_blueprint = Blueprint('socket_service_api', __name__)
 security = None
 
-
-class Manager(object):
-    clients = 0
-manager = Manager()
-
-
 def init_app(app, securityobj, kafkatopics=None):
     '''
     Initialize and register the socket service.
@@ -55,8 +49,8 @@ def connect():
     """
     New client connects to the socket.
     """
-    logger.info("New connection attempt")
-    manager.clients += 1
+    usr = security.get_current_user_id()
+    logger.info(f"New websocket connection by {usr}")
 
 @socketio.on('join', namespace='/psdm_ws')
 def on_join(experiment_name):
@@ -73,8 +67,8 @@ def disconnect():
     Client disconnects from socket.
     :return:
     """
-    manager.clients -= 1
-
+    usr = security.get_current_user_id()
+    logger.info(f"{usr} disconnected from websocket")
 
 
 
@@ -85,10 +79,8 @@ def sock_send_message_to_client(experiment_name, message_type):
     :param: experiment_name - The experiment_name; for example, diadaq13
     :param: message_type - The message type/business object type of the message; for example, elog
     """
-    # Push update only if some clients are connected.
-    if manager.clients > 0:
-        request.json['psdm_ws_msg_type'] = message_type;
-        socketio.emit("psdm_ws_msg", request.json, namespace='/psdm_ws' , room=experiment_name)
+    request.json['psdm_ws_msg_type'] = message_type;
+    socketio.emit("psdm_ws_msg", request.json, namespace='/psdm_ws' , room=experiment_name)
 
     return jsonify(success=True)
 
