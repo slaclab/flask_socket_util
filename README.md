@@ -41,7 +41,14 @@ In your client JS, add these lines in your document.ready function
     WebSocketConnection.connect();
     $(document).on('elog', function(event, elogData) {
     	console.log("Processing elog event for experiment " + experiment_name);
-
+```
+Add the `lgbk_socketio` class to your element; events from the server will be dispatched to all elements with this class.
+```
+<div class="lgbk_socketio">
+...
+document.querySelector(".lgbk_socketio").addEventListener("elog", function(event) {
+  console.log("Processing elog event for experiment " + experiment_name + "=" + event.detail.value._id);
+})
 ```
 
 The variable `experiment_name` is used as SocketIO's room name. Cross-room messages, (for now, only the `experiments` topic), are sent on the `the_global_room` room. If the variable `experiment_name` is not defined, the `the_global_room` room is joined automatically.

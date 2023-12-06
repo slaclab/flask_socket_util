@@ -39,16 +39,18 @@ var WebSocketConnection = (function(){
 
         socket.on('psdm_ws_msg',function(update_msg){
             console.log("Message from server; type=" + update_msg['psdm_ws_msg_type']);
-            $(document).trigger(update_msg['psdm_ws_msg_type'], update_msg);
+            document.querySelectorAll(".lgbk_socketio").forEach((trgt) => {
+                trgt.dispatchEvent(new CustomEvent(update_msg['psdm_ws_msg_type'], { detail: update_msg, bubbles: false }))
+            })
         });
 
         socket.on('ping', function(){
             // console.log("Packet written out to the server...");
         })
 
-        $(window).on("beforeunload", function(){
-          console.log("Disconnecting from websocket");
-          socket.disconnect();
+        window.addEventListener("unload", (event) => { 
+            console.log("Disconnecting from websocket");
+            socket.disconnect();  
         })
     };
 
